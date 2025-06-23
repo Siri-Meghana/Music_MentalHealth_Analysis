@@ -6,9 +6,12 @@ import matplotlib.pyplot as plt
 # Load dataset
 df = pd.read_csv("mxmh_survey_results.csv")
 df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
-df = df.dropna(subset=['fav_genre', 'anxiety', 'depression'])
 
-# Streamlit Page Setup
+# Clean + convert numeric columns
+df = df.dropna(subset=['fav_genre', 'anxiety', 'depression', 'age', 'hours_per_day'])
+df['age'] = pd.to_numeric(df['age'], errors='coerce')
+df['hours_per_day'] = pd.to_numeric(df['hours_per_day'], errors='coerce')
+
 # Streamlit Page Setup
 st.set_page_config(page_title="Music & Mental Health", page_icon="🎧")
 st.title("🎧 The Healing Power of Music")
