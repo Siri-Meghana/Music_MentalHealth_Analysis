@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # Load dataset
 df = pd.read_csv("mxmh_survey_results.csv")
 df.columns = df.columns.str.strip().str.lower().str.replace(' ', '_')
-df = df.dropna(subset=['music_genre', 'anxiety', 'depression'])
+df = df.dropna(subset=['fav_genre', 'anxiety', 'depression'])
 
 # Streamlit Page Setup
 # Streamlit Page Setup
@@ -24,12 +24,12 @@ Scroll down and interact with the dashboard to uncover meaningful insights.
 """)
 
 # Genre Selector
-genres = sorted(df['music_genre'].dropna().unique())
+genres = sorted(df['fav_genre'].dropna().unique())
 selected_genre = st.selectbox("Choose a genre to highlight:", genres)
 
 # Average Anxiety by Genre
 st.subheader("Average Anxiety Score by Genre")
-genre_anxiety = df.groupby('music_genre')['anxiety'].mean().sort_values()
+genre_anxiety = df.groupby('fav_genre')['anxiety'].mean().sort_values()
 
 fig1, ax1 = plt.subplots()
 sns.barplot(x=genre_anxiety.values, y=genre_anxiety.index, palette='coolwarm', ax=ax1)
@@ -39,7 +39,7 @@ st.pyplot(fig1)
 
 # Average Depression by Genre
 st.subheader("Average Depression Score by Genre")
-genre_depression = df.groupby('music_genre')['depression'].mean().sort_values()
+genre_depression = df.groupby('fav_genre')['depression'].mean().sort_values()
 
 fig2, ax2 = plt.subplots()
 sns.barplot(x=genre_depression.values, y=genre_depression.index, palette='mako', ax=ax2)
