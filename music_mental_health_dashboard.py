@@ -26,13 +26,34 @@ This dashboard is built using real-world survey data to uncover:
 Scroll down and interact with the dashboard to uncover meaningful insights.
 """)
 
+# --- Interactivity: Age and Hours Filters ---
+st.sidebar.header("🔍 Filter Options")
+
+# Age Filter
+min_age = int(df['age'].min())
+max_age = int(df['age'].max())
+age_range = st.sidebar.slider("Select Age Range", min_value=min_age, max_value=max_age, value=(18, 30))
+
+# Hours Per Day Filter
+min_hours = float(df['hours_per_day'].min())
+max_hours = float(df['hours_per_day'].max())
+hours_range = st.sidebar.slider("Select Listening Hours per Day", min_value=0.0, max_value=10.0, value=(1.0, 5.0), step=0.5)
+
+# Filter the data based on user input
+filtered_df = df[
+    (df['age'] >= age_range[0]) & 
+    (df['age'] <= age_range[1]) & 
+    (df['hours_per_day'] >= hours_range[0]) &
+    (df['hours_per_day'] <= hours_range[1])
+]
+
 # Genre Selector
 genres = sorted(df['fav_genre'].dropna().unique())
 selected_genre = st.selectbox("Choose a genre to highlight:", genres)
 
 # Average Anxiety by Genre
 st.subheader("Average Anxiety Score by Genre")
-genre_anxiety = df.groupby('fav_genre')['anxiety'].mean().sort_values()
+genre_anxiety = filtered_df.groupby('fav_genre')['anxiety'].mean().sort_values()
 
 fig1, ax1 = plt.subplots()
 sns.barplot(x=genre_anxiety.values, y=genre_anxiety.index, palette='coolwarm', ax=ax1)
@@ -42,7 +63,7 @@ st.pyplot(fig1)
 
 # Average Depression by Genre
 st.subheader("Average Depression Score by Genre")
-genre_depression = df.groupby('fav_genre')['depression'].mean().sort_values()
+genre_depression = filtered_df.groupby('fav_genre')['depression'].mean().sort_values()
 
 fig2, ax2 = plt.subplots()
 sns.barplot(x=genre_depression.values, y=genre_depression.index, palette='mako', ax=ax2)
